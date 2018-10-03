@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+  let(:config) { }
 
   context 'for method calls' do
     context 'with line break before 1st parameter' do
@@ -492,6 +493,19 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
                   a)
         RUBY
       end
+    end
+  end
+
+  context 'it inherits indentation width from layout' do
+    let(:config) { RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 4 }) }
+
+    it do
+      expect_no_offenses(<<-RUBY.strip_indent)
+        some_method(
+            a,
+            b
+        )
+      RUBY
     end
   end
 
